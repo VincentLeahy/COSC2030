@@ -109,3 +109,97 @@ void getMonthData(WeatherData &data)
     //calculate the average tempratures
     data.averageTemp = (data.high + data.low) / 2.0;
 }
+
+//The totalRain function accepsts an array of WeatherData
+//Structures and resturns the total of all the elements
+//rain members
+
+double totalRain(WeatherData data[], int size)
+{
+    double totalRain = 0; // Accumulator
+
+    //get the total of the rain members
+    for (int index = 0; index < size; index++)
+        totalRain += data[index].rain;
+
+    //return the total
+    return totalRain;
+}
+
+//the averageMontlyRainfall fuinction accepts an arry
+//of weather structures and returns the average
+//monthly rainfall
+
+double averageMonthlyRainfall(WeatherData data [], int size)
+{
+    //the average is the total amount of rain divided by the number of months
+    return totalRain(data, size) / size;
+}
+
+//averageAverageTemp function accpets an array of WeatherData structs and reuntrs the average of all
+//the monthly average tempratures
+
+double averageAverageTemp(WeatherData data [], int size)
+{
+    //calcualte the average monthly average temprature
+    double aveTotal = 0;    //Accumulator for average tmeps
+    double aveAve;          //average of the averagfes
+
+    //get the total of the average temperatures
+    for (int index = 1; index < size; index++)
+        aveTotal += data[index].averageTemp;
+
+    //return the average of the averages
+    return aveAve;
+}
+
+//The highestTemp function accepts
+// a weatherdata array, int indicatting the sieze of the array, in by reference to hold the month with the highest temp.
+//The funct retrns the hgsts temp and sets the mnth parameter to number of the mnth w/ hghtemp.
+
+double highestTemp(WeatherData data[], int size, int &month)
+{
+    //set the highest to the first month
+    double highest = data[0].high;
+
+    //step though the array lookin for the highest
+    for (int index =1; index < size; index++)
+    {
+        if (data[index].high > highest)
+        {
+            //save this value. it is the highest so far.
+            highest = data[index].high;
+
+            //save this months number. (1 = jan, etc)
+            month = index + 1;
+        }
+    }
+
+    //return the highest temprature
+    return highest;
+}
+
+//lowest function accepts
+// a weatherdata array, int indicatting the sieze of the array, in by reference to hold the month with the lowest temp.
+//The funct retrns the hgsts temp and sets the mnth parameter to number of the mnth w/ lowest temp.
+
+double lowestTemp(WeatherData data[], int size, int &month)
+{
+    //set the lowest to the first month
+    double lowest = data[0].low;
+
+    //step though the array lookin for the highest
+    for (int index =1; index < size; index++)
+    {
+        if (data[index].low > lowest)
+        {
+            //save this value. it is the highest so far.
+            lowest = data[index].low;
+
+            //save this months number. (1 = jan, etc)
+            month = index + 1;
+        }
+    }
+
+    //return the highest temprature
+    return lowest;
