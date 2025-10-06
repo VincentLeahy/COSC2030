@@ -178,7 +178,7 @@ int main()
     ProductionWorker pw("John Smith", "123-A", "11-15-2015", ProductionWorker::DAY_SHIFT, 26.50);
 
     cout << "Here's the first production worker:\n";
-    pw.print(); // Call print to display data
+    pw.print(); //Call print to display data
     cout << endl;
 
     //Make another ProductionWorker using default constructor and setters
@@ -190,7 +190,7 @@ int main()
     pw2.setPayRate(28.50);
 
     cout << "Here's the second production worker:\n";
-    pw2.print(); // Display second worker data
+    pw2.print(); //Display second worker data
 
     return 0;
 }
