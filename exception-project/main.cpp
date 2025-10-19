@@ -7,160 +7,183 @@
 
 #include <iostream>
 #include <string>
-#include <stdexcept>
-#include <iomanip>
 using namespace std;
 
-// ===== Exception Classes =====
-class InvalidEmployeeNumber : public runtime_error 
+class Employee
 {
-public:
-    InvalidEmployeeNumber() : runtime_error("Error: Invalid Employee Number!") {}
-};
-
-class InvalidShift : public runtime_error 
-{
-public:
-    InvalidShift() : runtime_error("Error: Invalid Shift! Must be 1 (Day) or 2 (Night).") {}
-};
-
-class InvalidPayRate : public runtime_error 
-{
-public:
-    InvalidPayRate() : runtime_error("Error: Invalid Pay Rate! Cannot be negative.") {}
-};
-
-//Employee Class
-class Employee {
 private:
-    string name;
+    string employeeName;
     int employeeNumber;
     string hireDate;
 
-public:
-    Employee() : name(""), employeeNumber(0), hireDate("") {}
-
-    Employee(string n, int num, string date) : name(n), hireDate(date) {
-        setEmployeeNumber(num);
-    }
-
-    void setName(string n) { name = n; }
-
-    void setEmployeeNumber(int num) 
+    //member function to valudatre the eomptee number
+    void checkEmployeeNumber()
     {
-        if (num < 0 || num > 9999)
+        if (employeeNumber < 0 || employeeNumber > 9999)
             throw InvalidEmployeeNumber();
-        employeeNumber = num;
     }
 
-    void setHireDate(string h) { hireDate = h; }
+public:
+    //exception class
+    class InvalidEmployeeNumber {};
 
-    string getName() const { return name; }
-    int getEmployeeNumber() const { return employeeNumber; }
-    string getHireDate() const { return hireDate; }
-
-    virtual void print() const 
+    //Constructor
+    Employee(string name, int number, string hDate)
     {
-        cout << "Name: " << name << endl;
-        cout << "Employee Number: " << employeeNumber << endl;
-        cout << "Hire Date: " << hireDate << endl;
+        //set the number varible
+        employeeName = name;
+        employeeNumber = number;
+        hireDate = hDate;
+
+        //chekc the emploett number 
+        checkEmployeeNumber();
     }
+
+    //mutators
+    void setEmployeeName(string name)
+    {
+        employeeName = name;
+    }
+
+    void setEmployeeNumber(int number)
+    {
+        employeeNumber = number;
+        checkEmployeeNumber();
+    }
+
+    void setHireDate(string hDate)
+    {
+        hireDate = hDate;
+    }
+
+    //Accessors
+    string getEmployeeName() const
+    {
+        return employeeName; 
+    }
+
+    int getEmployeeNumber() const
+    {
+        return employeeNumber;
+    }
+
+    string getHireDate()const
+    {
+        return hireDate;
+    }
+
 };
 
-//ProductionWorker Class
-class ProductionWorker : public Employee 
+class ProductionWorker : public Employee
 {
-public:
-    static const int DAY_SHIFT = 1;
-    static const int NIGHT_SHIFT = 2;
-
 private:
     int shift;
-    double payRate;
+    double hourlyPayRate;
+    
+    //Member Function to validate the shift number
+    void checkShift()
+    {
+        if (shift < 1 || shift > 2)
+            throw InvalidShift();
+    }
+
+    //Member function to validate the pay rate 
+    void checkPayRate()
+    {
+        if (hourlyPayRate < 0)
+            throw InvalidPayRate();
+    }
 
 public:
-    ProductionWorker() : Employee(), shift(DAY_SHIFT), payRate(0.0) {}
+    //exception classes 
+    class InvalidShift
+    {};
 
-    ProductionWorker(string n, int num, string date, int sh, double rate)
-        : Employee(n, num, date) 
-        
-        {
-        setShift(sh);
-        setPayRate(rate);
+    class InvalidPayRate
+    {};
+
+    //constructor 
+    ProductionWorker(string name, int number, string hDate, int shiftNum, double payRate) : Employee(name, number, hDate)
+    {
+        //set the member varible
+        shift = shiftNum;
+        hourlyPayRate = payRate;
+
+        //check the shift and pay rate
+        checkShift();
+        checkPayRate();
     }
 
-    void setShift(int s) 
+    //Mutators
+    void setShift(int shiftNum)
     {
-        if (s != DAY_SHIFT && s != NIGHT_SHIFT)
-            throw InvalidShift();
-        shift = s;
+        shift = shiftNum;
+        checkShift();
     }
 
-    void setPayRate(double p) 
+    void setHourlyPayRate(double payRate)
     {
-        if (p < 0)
-            throw InvalidPayRate();
-        payRate = p;
+        hourlyPayRate = payRate;
+        checkPayRate();
     }
 
-    int getShift() const { return shift; }
-    double getPayRate() const { return payRate; }
-
-    void print() const override 
+    //Accessors
+    int getShift() const
     {
-        Employee::print();
-        cout << "Shift: " << (shift == DAY_SHIFT ? "Day" : "Night") << endl;
-        cout << "Hourly Pay Rate: $" << fixed << setprecision(2) << payRate << endl;
+        return shift;
+    }
+
+    double getHourlyPayRate()
+    {
+        return hourlyPayRate;
     }
 };
 
-// ===== main() Demonstration =====
-int main() 
+//Function Prototype
+void testValues(string, int, string, int, double);
+
+int main()
 {
-    try 
-    {
-        cout << "Creating employee with invalid number...\n";
-        Employee e1("John Smith", -10, "10-19-2025");
-    }
-    catch (InvalidEmployeeNumber &ex) 
-    
-    {
-        cout << ex.what() << endl;
-    }
+    //Test all good data
+    cout << "Testing good data...\n";
+    testValues("John Doe", 1234, "12/01/2009", 1, 22.50);
 
-    try 
-    {
-        cout << "\nCreating production worker with invalid shift...\n";
-        ProductionWorker pw1("Jane Doe", 1234, "10-19-2025", 3, 25.00);
-    }
-    catch (InvalidShift &ex) 
-    
-    {
-        cout << ex.what() << endl;
-    }
+    //Test a bad Employee Number
+    cout << "\nTesting a bad Employee number...\n";
+    testValues("John Doe", -99, "12/01/2009", 1, 22.50);
 
-    try 
-    {
-        cout << "\nCreating production worker with invalid pay rate...\n";
-        ProductionWorker pw2("Bob Jones", 5678, "10-19-2025", ProductionWorker::DAY_SHIFT, -5.00);
-    }
-    catch (InvalidPayRate &ex) 
-    
-    {
-        cout << ex.what() << endl;
-    }
+    //test a bad shift number
+    cout << "\nTesting a bad shift number...\n";
+    testValues("John Doe", 1234, "12/01/2009", 5, 22.50);
 
-    cout << "\nNow let's create a valid production worker:\n";
-    try 
-    {
-        ProductionWorker pw3("Sally Smith", 2222, "10-19-2025", ProductionWorker::NIGHT_SHIFT, 22.50);
-        pw3.print();
-    }
-    catch (exception &ex) 
-    
-    {
-        cout << ex.what() << endl;
-    }
+    //Test a bad pay rate.
+    cout << "\nTesting a bad pay rate...\n";
+    testValues("John Doe", 1234, "12/01/20009", 1, -100.0);
 
     return 0;
+}
+
+void testValues(string name, int number, string hDate, int shift, double payRate)
+{
+    //test the InvlaidEmployeeNumber exception
+    try
+    {
+        //create a production worker with an invaliud number
+        ProductionWorker worker(name, number, hDate, shift, payRate);
+
+        //report good date
+        cout << "Good date\n";
+    }
+    catch (Employee::InvalidEmployeeNumber)
+    {
+        cout << "Invaild employee number encountered.\n";
+    }
+    catch (ProductionWorker::InvalidShift)
+    {
+        cout << "invalid shift encountered.\n";
+    }
+    catch (ProductionWorker::InvalidPayRate)
+    {
+        cout << "Invlaid pay rate encountered.\n";
+    }
 }
